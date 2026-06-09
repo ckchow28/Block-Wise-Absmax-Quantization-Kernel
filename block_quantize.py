@@ -111,5 +111,13 @@ def test_quantization():
         print("Kernel output diverges from PyTorch beyond tolerance.")
         print(f"Scales match: {scales_match}")
 
+def block_dequantize(y_int8: torch.Tensor, scales: torch.Tensor, block_size: int = 128):
+  
+    # Reshape INT8 tensor into blocks, cast to float32, and multiply by the scales
+    y_blocks = y_int8.view(-1, block_size).to(torch.float32)
+    x_reconstructed = y_blocks * scales.unsqueeze(1)
+    
+    return x_reconstructed.view(-1)
+
 if __name__ == "__main__":
     test_quantization()
