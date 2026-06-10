@@ -15,6 +15,26 @@ The `_block_absmax_quantize_kernel` performs a foundational operation common in 
 4. **Write-back**: Stores the compressed INT8 tensor and the individual FP32 scale factors back to High Bandwidth Memory (HBM).
 
 
+## Results
+
+| Size | Triton Kernel (GB/s) | PyTorch Native (GB/s) |
+|------:|---------------------:|----------------------:|
+| 65,536 | 30,117.65 | 6,664.50 |
+| 131,072 | 45,816.55 | 21,355.58 |
+| 262,144 | 108,359.79 | 33,684.21 |
+| 524,288 | 147,870.03 | 40,524.36 |
+| 1,048,576 | 166,335.02 | 32,003.13 |
+| 2,097,152 | 182,449.88 | 32,665.11 |
+| 4,194,304 | 192,244.05 | 33,738.84 |
+| 8,388,608 | 191,878.20 | 34,294.54 |
+| 16,777,216 | 181,201.35 | 34,352.06 |
+| 33,554,432 | 170,705.56 | 34,246.37 |
+
+
+<img width="605" height="433" alt="image" src="https://github.com/user-attachments/assets/db838916-a3a6-41b3-998e-870c366dcd97" />
+
+At 4,194,304 elements, the speed up using Triton kernel is around ~5.7x. Interstingly, based on the plot the Triton kernel climbs rapidly and peaks around 192,244 (at size ~4M) then slightly plateaus at ~170,705 for massive 33M size. This indicates that the GPU's compute cores are no longer the botteneck for extremely large matrix.
+
 ## References
 
 [1] Dettmers, T., Lewis, M., Belkada, Y., & Zettlemoyer, L. (2022). LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale. Advances in Neural Information Processing Systems.
