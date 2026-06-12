@@ -15,6 +15,9 @@ The `_block_absmax_quantize_kernel` performs a foundational operation common in 
 4. **Write-back**: Stores the compressed INT8 tensor and the individual FP32 scale factors back to High Bandwidth Memory (HBM).
 
 
+## Dynamic Token-Wise Activation Quantization (Updated on 12 June 2026)
+  `dynamic_quantize.py` treats data as a 2D matrix shape of (num_tokens, hidden_dim) where each GPU thread block processes exactly one token instead of a flat, static array as in `block_quantize.py`. The main motivation is because the hidden states and user inputs will change in every forward pass, such that a token-wise quantization in the GPU allows 2D strided memory access in Triton before they can be multiplied with the weights.
+
 ## Results
 
 | Size | Triton Kernel (GB/s) | PyTorch Native (GB/s) |
